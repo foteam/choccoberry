@@ -32,7 +32,7 @@ export function CartModal({ visible, onClose }: Props) {
                 {/* ITEMS */}
                 <FlatList
                     data={items}
-                    keyExtractor={(item) => item.id}
+                    keyExtractor={(item) => item._id}
                     style={{ marginTop: 8, height: 200 }}
                     renderItem={({ item }) => (
                         <View style={styles.item}>
@@ -47,7 +47,7 @@ export function CartModal({ visible, onClose }: Props) {
                             <View style={styles.qtyBox}>
                                 <TouchableOpacity
                                     style={styles.qtyBtn}
-                                    onPress={() => decrease(item.id)}
+                                    onPress={() => decrease(item._id)}
                                 >
                                     <Text style={styles.qtyText}>−</Text>
                                 </TouchableOpacity>
@@ -56,7 +56,7 @@ export function CartModal({ visible, onClose }: Props) {
 
                                 <TouchableOpacity
                                     style={styles.qtyBtn}
-                                    onPress={() => increase(item.id)}
+                                    onPress={() => increase(item._id)}
                                 >
                                     <Text style={styles.qtyText}>+</Text>
                                 </TouchableOpacity>

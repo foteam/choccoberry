@@ -11,8 +11,8 @@ type CartItem = Item & { qty: number }
 type CartStore = {
     items: CartItem[]
     add: (item: Item) => void
-    increase: (id: string) => void
-    decrease: (id: string) => void
+    increase: (_id: string) => void
+    decrease: (_id: string) => void
     clear: () => void
 }
 
@@ -21,8 +21,8 @@ export const useCart = create<CartStore>((set) => ({
 
     add: (item) =>
         set((state) => {
-            const exist = state.items.find((i) => i.id === item.id)
-            if (exist) {
+            const existing = state.items.find(i => i.id === item.id)
+            if (existing) {
                 return {
                     items: state.items.map((i) =>
                         i.id === item.id ? { ...i, qty: i.qty + 1 } : i

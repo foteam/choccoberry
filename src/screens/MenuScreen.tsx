@@ -1,14 +1,15 @@
 ﻿import { View, FlatList, Animated, Image, StyleSheet} from 'react-native'
 import { Layout, Text } from '@ui-kitten/components'
 import { useState, useMemo, useEffect, useRef} from 'react'
-
-import { categories } from '../data/categories'
-import { menu } from '../data/menu'
+import {useQuery} from '@tanstack/react-query'
+import { getProducts } from '../api/products'
+import { getCategories } from '../api/categories'
 import { CategoryList } from '../components/CategoryList'
 import { ProductCard } from '../components/ProductCard'
 import { CartBar } from '../components/CartBar'
 import { CartModal } from '../components/CartModal'
 import { useCart } from '../store/cart.store'
+import { api } from '../api/axios'
 
 export default function MenuScreen() {
     const add = useCart((s) => s.add)
@@ -21,9 +22,31 @@ export default function MenuScreen() {
     const fadeAnim = useRef(new Animated.Value(1)).current
     const translateAnim = useRef(new Animated.Value(0)).current
 
+    useEffect(() => {
+        console.log('TEST REQUEST START')
+
+        api.get('/products')
+            .then(res => {
+                console.log('TEST RESPONSE:', res.data)
+            })
+            .catch(err => {
+                console.log('TEST ERROR:', err.message)
+            })
+    }, [])
+
+    const { data: categories = [], isLoading: loadingCategories } = useQuery({
+        queryKey: ['categories'],
+        queryFn: getCategories,
+    })
+
+    const { data: products = [], isLoading: loadingProducts } = useQuery({
+        queryKey: ['products'],
+        queryFn: getProducts,
+    })
+
     const filteredMenu = useMemo(() => {
-        if (selectedCategory === 'all') return menu
-        return menu.filter((i) => i.category === selectedCategory)
+        if (selectedCategory === 'all') return products
+        return products.filter((i) => i.category.name === selectedCategory)
     }, [selectedCategory])
 
     useEffect(() => {
@@ -61,7 +84,7 @@ export default function MenuScreen() {
     return (
         <Layout style={{ flex: 1, flexDirection: 'row' , }}>
             {/* LEFT — CATEGORIES */}
-            <Animated.View style={{ width: 160, maxHeight: "100%", paddingTop: 20, paddingVertical: 600, borderRightWidth: 1, borderColor: '#E4E9F2' , backgroundColor: '#0E5A63' }}>
+            <Animated.View style={{ width: 160, flex: 1, paddingTop: 20, paddingVertical: 600, borderRightWidth: 1, borderColor: '#E4E9F2' , backgroundColor: '#0E5A63' }}>
                 {/* LOGO */}
                 <Image
                     source={require('../../assets/chocco_logo_white.png')}
@@ -100,7 +123,7 @@ export default function MenuScreen() {
                     </View>
                     <FlatList
                         data={filteredMenu}
-                        keyExtractor={(item) => item.id}
+                        keyExtractor={(item) => item._id}
                         numColumns={4}
                         columnWrapperStyle={{
                             gap: 10,

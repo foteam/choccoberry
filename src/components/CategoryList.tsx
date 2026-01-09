@@ -2,9 +2,9 @@
 import { View, Image, StyleSheet } from 'react-native'
 
 type Category = {
-    id: string
-    title: string
-    image: any
+    _id: string
+    name: string
+    image?: string
 }
 
 type Props = {
@@ -19,11 +19,11 @@ export function CategoryList({ categories, selected, onSelect }: Props) {
             <List
                 data={categories}
                 renderItem={({ item }) => {
-                    const active = selected === item.id
+                    const active = selected === item._id
 
                     return (
                         <ListItem
-                            onPress={() => onSelect(item.id)}
+                            onPress={() => onSelect(item._id)}
                             style={[
                                 styles.item,
                                 { backgroundColor: active ? '#0d525a' : '#0E5A63' },
@@ -38,7 +38,7 @@ export function CategoryList({ categories, selected, onSelect }: Props) {
                                         { color: active ? '#FFFFFF' : '#E0F2F1' },
                                     ]}
                                 >
-                                    {item.title}
+                                    {item.name}
                                 </Text>
                             )}
                         />
